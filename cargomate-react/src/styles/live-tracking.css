@@ -1,0 +1,282 @@
+/* ─── Live Tracking Map ─────────────────────────────────────── */
+
+.live-tracking-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+.live-tracking-wrapper.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: #0f172a;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.map-expand-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.map-expand-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.tracking-info-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.info-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.info-chip .chip-icon {
+  font-size: 16px;
+}
+
+.info-chip .chip-label {
+  display: block;
+  color: #94a3b8;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-chip .chip-value {
+  display: block;
+  color: #e2e8f0;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.eta-chip {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.distance-chip {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.status-chip {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #64748b;
+}
+
+.live-dot.active {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(34, 197, 94, 0.8); }
+}
+
+.map-container {
+  flex: 1;
+  min-height: 260px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.map-overlay-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.85);
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.map-overlay-message .overlay-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.map-overlay-message p {
+  color: #e2e8f0;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.map-overlay-message small {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.last-update-bar {
+  text-align: right;
+  color: #64748b;
+  font-size: 11px;
+  padding: 2px 4px;
+}
+
+/* Fallback (no API key) */
+.live-tracking-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 8px;
+  color: #94a3b8;
+}
+
+.live-tracking-fallback .fallback-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.live-tracking-fallback .fallback-icon.loading-spin {
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.live-tracking-fallback p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.live-tracking-fallback small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* ─── Share Location Button (Driver Dashboard) ──────────── */
+
+.share-location-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.share-location-btn.sharing {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  animation: sharing-glow 2s ease-in-out infinite;
+}
+
+.share-location-btn.idle {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.share-location-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes sharing-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(239, 68, 68, 0.6); }
+}
+
+.location-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #22c55e;
+  margin-top: 6px;
+  justify-content: center;
+}
+
+.location-status-indicator .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+/* ─── Light Theme Overrides ────────────────────────────────────────────────── */
+.light-theme .info-chip {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.light-theme .chip-label {
+  color: #64748b !important;
+}
+
+.light-theme .chip-value {
+  color: #0f172a !important;
+}

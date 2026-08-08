@@ -1,4 +1,7 @@
 import TrackingModal from '../components/TrackingModal';
+import LiveTrackingMap from '../components/LiveTrackingMap';
+import DriverRecommendations from '../components/DriverRecommendations';
+import ProofOfDeliveryModal from '../components/ProofOfDeliveryModal';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RatingModal from '../components/RatingModal';
@@ -69,6 +72,12 @@ const { toasts, showToast, removeToast } = useToast();  // ADD
   shipment: null,
   driver: null
 });
+
+  // AI Recommendations panel state
+  const [recModal, setRecModal] = useState({ open: false, shipment: null });
+
+  // Proof of Delivery modal state
+  const [podModal, setPodModal] = useState({ open: false, shipment: null, mode: 'verify' });
 
 
   // Authentication
@@ -144,11 +153,11 @@ useEffect(() => {
 
 
   const checkAuthentication = () => {
-    const token = localStorage.getItem('authToken');
-    const userData = localStorage.getItem('userData');
+    const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+    const userData = sessionStorage.getItem('userData') || localStorage.getItem('userData');
     
     if (!token || !userData) {
-console.log('❌ No authentication found');
+      console.log('❌ No authentication found');
       navigate('/login');
       return;
     }
@@ -157,7 +166,7 @@ console.log('❌ No authentication found');
       const user = JSON.parse(userData);
       
       if (user.role !== 'shipper') {
-         console.log('❌ User is not a shipper');
+        console.log('❌ User is not a shipper');
         navigate('/driver-dashboard');
         return;
       }
@@ -166,6 +175,7 @@ console.log('❌ No authentication found');
       console.log('✅ Shipper authenticated:', user.name, 'ID:', user.id);
     } catch (error) {
       console.error('❌ Error parsing user data:', error);
+      sessionStorage.clear();
       localStorage.clear();
       navigate('/login');
     }
@@ -198,7 +208,7 @@ console.log('❌ No authentication found');
       
       try {
         const response = await fetch(`http://localhost:3000/api/shipments/user/${currentUser.id}`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+          headers: { 'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}` }
         }).catch(() => null);
         
         if (response && response.ok) {
@@ -262,6 +272,8 @@ console.log('❌ No authentication found');
   };
 
   const logout = () => {
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('userData');
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     navigate('/login');
@@ -335,7 +347,7 @@ console.log('❌ No authentication found');
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
         },
         body: JSON.stringify(newShipment)
       }).catch(() => null);
@@ -373,7 +385,7 @@ const viewBids = async (shipment) => {
       `http://localhost:3000/api/shipments/${shipment.shipment_id}/bids`,
       {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
         }
       }
     );
@@ -436,7 +448,7 @@ const acceptBid = async (bid) => {
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -480,19 +492,8 @@ const acceptBid = async (bid) => {
   };
 
   const openRatingModal = (shipment) => {
-    setModalState({
-      ...modalState,
-      ratingModal: true,
-      selectedShipment: shipment
-    });
-    setRating(0);
-    setRatingComment('');
+    setRatingModal({ show: true, shipment });
   };
-   
-  // ========== ADD THESE TWO NEW FUNCTIONS HERE ==========
-const openRatingModalNew = (shipment) => {
-  setRatingModal({ show: true, shipment });
-};
 
 const handleRatingSuccess = () => {
   loadUserData();
@@ -717,9 +718,19 @@ const handleRatingSuccess = () => {
   <td>{shipment.bids_count || 0}</td>
   <td className="actions-cell">
     {shipment.status === 'pending_bids' && (
-      <button className="btn btn-sm btn-primary" onClick={() => viewBids(shipment)}>
-        View Bids
-      </button>
+      <>
+        <button className="btn btn-sm btn-primary" onClick={() => viewBids(shipment)}>
+          View Bids
+        </button>
+        <button
+          className="btn btn-sm"
+          style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff', border: 'none', cursor: 'pointer', borderRadius: '6px', padding: '4px 10px', fontSize: '12px', fontWeight: 600 }}
+          onClick={() => setRecModal({ open: true, shipment })}
+          title="AI-powered driver scoring"
+        >
+          🤖 AI Recommend
+        </button>
+      </>
     )}
     {shipment.status === 'active' && (
       <button 
@@ -735,10 +746,37 @@ const handleRatingSuccess = () => {
          Track & Chat
       </button>
     )}
-    {shipment.status === 'delivered' && !shipment.driver_rating && (
-      <button className="btn btn-sm btn-success" onClick={() => openRatingModal(shipment)}>
-        Rate Driver
-      </button>
+    {shipment.status === 'delivered' && (
+      <>
+        <button
+          className="btn btn-sm btn-success"
+          style={{ background: 'linear-gradient(135deg,#22c55e,#16a34a)', color: '#fff', border: 'none', fontWeight: 600, padding: '5px 12px', borderRadius: '6px' }}
+          onClick={() => setPodModal({ open: true, shipment, mode: 'verify' })}
+        >
+          ✍️ Verify & Sign POD
+        </button>
+        {!shipment.driver_rating && (
+          <button className="btn btn-sm btn-outline" style={{ marginTop: 4 }} onClick={() => openRatingModal(shipment)}>
+            Rate Driver
+          </button>
+        )}
+      </>
+    )}
+    {shipment.status === 'completed' && (
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        <button
+          className="btn btn-sm"
+          style={{ background: 'rgba(34, 197, 94, 0.15)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.3)', fontWeight: 600, padding: '4px 10px', borderRadius: '6px', fontSize: 12 }}
+          onClick={() => setPodModal({ open: true, shipment, mode: 'view' })}
+        >
+          📄 View Proof
+        </button>
+        {!shipment.driver_rating && (
+          <button className="btn btn-sm btn-success" onClick={() => openRatingModal(shipment)}>
+            Rate Driver
+          </button>
+        )}
+      </div>
     )}
   </td>
 </tr>
@@ -972,7 +1010,7 @@ const handleRatingSuccess = () => {
                             </button>
                           )}
                          {shipment.status === 'completed' && !shipment.driver_rating && (
-  <button className="btn btn-warning" onClick={() => openRatingModalNew(shipment)}>
+  <button className="btn btn-warning" onClick={() => openRatingModal(shipment)}>
     <i className="fas fa-star"></i>
     Rate Driver
   </button>
@@ -1008,11 +1046,144 @@ const handleRatingSuccess = () => {
   <Support />
 )}
 
-{/* Other placeholder sections - still under development */}
-{['track-vehicles', 'reports'].includes(activeSection) && (
+{/* ── Track Vehicles Section ─────────────────────────────────────── */}
+{activeSection === 'track-vehicles' && (
   <div className="section active">
     <div className="section-header">
-      <h1>{activeSection.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h1>
+      <h1>Track Vehicles</h1>
+      <button className="btn btn-secondary" onClick={loadUserData}>
+        <i className="fas fa-sync"></i> Refresh
+      </button>
+    </div>
+
+    {(() => {
+      const activeShipments = userShipments.filter(s => s.status === 'active' || s.status === 'in_transit');
+
+      if (activeShipments.length === 0) {
+        return (
+          <div className="content-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <i className="fas fa-truck" style={{ fontSize: 56, color: '#64748b', marginBottom: 16 }}></i>
+            <h3 style={{ color: '#e2e8f0', marginBottom: 8 }}>No Active Shipments</h3>
+            <p style={{ color: '#94a3b8' }}>Once a driver accepts your shipment and starts delivering, live tracking will appear here.</p>
+            <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={() => switchToSection('create-shipment')}>
+              <i className="fas fa-plus"></i> Create Shipment
+            </button>
+          </div>
+        );
+      }
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* Summary strip */}
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <div className="content-card" style={{ flex: '1 1 180px', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)', width: 44, height: 44, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🚛</div>
+              <div><div style={{ fontSize: 24, fontWeight: 700, color: '#e2e8f0' }}>{activeShipments.length}</div><div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>Active Vehicles</div></div>
+            </div>
+            <div className="content-card" style={{ flex: '1 1 180px', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', width: 44, height: 44, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>📍</div>
+              <div><div style={{ fontSize: 24, fontWeight: 700, color: '#e2e8f0' }}>{activeShipments.filter(s => s.status === 'in_transit').length || activeShipments.length}</div><div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>In Transit</div></div>
+            </div>
+            <div className="content-card" style={{ flex: '1 1 180px', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', width: 44, height: 44, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>💬</div>
+              <div><div style={{ fontSize: 24, fontWeight: 700, color: '#e2e8f0' }}>Live</div><div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>Chat Enabled</div></div>
+            </div>
+          </div>
+
+          {/* Vehicle cards */}
+          {activeShipments.map((shipment) => (
+            <div key={shipment.shipment_id} className="content-card" style={{ padding: 0, overflow: 'hidden', border: '1px solid rgba(34,197,94,0.2)' }}>
+              {/* Card header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: 'linear-gradient(135deg, rgba(34,197,94,0.12), rgba(22,163,74,0.06))', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 22 }}>🚛</span>
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#e2e8f0', fontSize: 15 }}>#{shipment.shipment_id}</div>
+                    <div style={{ fontSize: 12, color: '#94a3b8' }}>{shipment.from_location} → {shipment.to_location}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ background: '#22c55e', color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'white', animation: 'pulse 1.5s ease-in-out infinite', display: 'inline-block' }}></span>
+                    LIVE
+                  </span>
+                  <button
+                    className="btn btn-sm btn-primary"
+                    style={{ fontSize: 12, padding: '6px 14px' }}
+                    onClick={() => setTrackingModal({ open: true, shipment, driver: shipment.selected_driver_id })}
+                  >
+                    <i className="fas fa-expand"></i> Full View
+                  </button>
+                </div>
+              </div>
+
+              {/* Card body: shipment info + map + mini chat */}
+              <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr 300px', gap: 0, minHeight: 340 }}>
+                {/* Left: shipment details */}
+                <div style={{ padding: '16px 20px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ fontSize: 13, color: '#22c55e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Shipment Info</div>
+                  {[
+                    { label: 'Package', value: `${shipment.package_type} (${shipment.package_weight}kg)` },
+                    { label: 'Vehicle', value: (shipment.vehicle_type || '').replace(/_/g, ' ') },
+                    { label: 'Pickup', value: shipment.pickup_date ? new Date(shipment.pickup_date).toLocaleDateString() : '—' },
+                    { label: 'Status', value: shipment.status?.toUpperCase() },
+                    { label: 'Driver', value: shipment.driver_name || shipment.selected_driver_name || (typeof shipment.driver === 'object' && shipment.driver?.name) || 'Assigned' },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <span style={{ color: '#94a3b8', fontSize: 12 }}>{item.label}</span>
+                      <span style={{ color: '#e2e8f0', fontSize: 12, fontWeight: 600, textAlign: 'right', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.value}</span>
+                    </div>
+                  ))}
+                  <div style={{ marginTop: 'auto', paddingTop: 10 }}>
+                    <button
+                      className="btn btn-sm"
+                      style={{ width: '100%', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                      onClick={() => setTrackingModal({ open: true, shipment, driver: shipment.selected_driver_id })}
+                    >
+                      📍 Track & Chat Full Screen
+                    </button>
+                  </div>
+                </div>
+
+                {/* Center: live map */}
+                <div style={{ position: 'relative', minHeight: 340 }}>
+                  <LiveTrackingMap shipment={shipment} />
+                  <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.7)', color: '#22c55e', padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700, backdropFilter: 'blur(4px)' }}>
+                    📍 Live GPS Feed
+                  </div>
+                </div>
+
+                {/* Right: mini chat */}
+                <div style={{ borderLeft: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', color: '#22c55e', fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>
+                    💬 Quick Chat
+                  </div>
+                  <div style={{ flex: 1, padding: '12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: '#64748b', textAlign: 'center', fontSize: 13 }}>
+                    <i className="fas fa-comments" style={{ fontSize: 32, marginBottom: 10, color: '#475569' }}></i>
+                    <p style={{ margin: '0 0 12px 0' }}>Open full view for live chat with driver</p>
+                    <button
+                      className="btn btn-sm"
+                      style={{ background: '#22c55e', color: 'white', border: 'none', borderRadius: 6, padding: '6px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                      onClick={() => setTrackingModal({ open: true, shipment, driver: shipment.selected_driver_id })}
+                    >
+                      💬 Open Chat
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    })()}
+  </div>
+)}
+
+{/* Reports - still under development */}
+{activeSection === 'reports' && (
+  <div className="section active">
+    <div className="section-header">
+      <h1>Reports</h1>
     </div>
     <div className="content-card">
       <p>This section is under development.</p>
@@ -1239,6 +1410,24 @@ const handleRatingSuccess = () => {
     shipment={trackingModal.shipment}
     driver={trackingModal.driver}
     onClose={() => setTrackingModal({ open: false, shipment: null, driver: null })}
+  />
+)}
+
+{/* AI Driver Recommendations Panel */}
+{recModal.open && recModal.shipment && (
+  <DriverRecommendations
+    shipment={recModal.shipment}
+    onClose={() => setRecModal({ open: false, shipment: null })}
+  />
+)}
+
+{/* Proof of Delivery Modal */}
+{podModal.open && podModal.shipment && (
+  <ProofOfDeliveryModal
+    shipment={podModal.shipment}
+    mode={podModal.mode}
+    onClose={() => setPodModal({ open: false, shipment: null, mode: 'verify' })}
+    onSuccess={() => loadUserData()}
   />
 )}
 

@@ -27,7 +27,7 @@ function DriverEarnings({ currentUser }) {
       
       const response = await fetch(`${API_URL}/earnings/driver/${currentUser.id}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
         }
       });
 

@@ -33,7 +33,7 @@ useEffect(() => {
 // Add this function
 const loadMessages = async () => {
   try {
-    const token = localStorage.getItem('authToken');
+    const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
     const response = await fetch(
       `http://localhost:3000/api/messages/${trip.shipment_id}`,
       {
@@ -65,7 +65,7 @@ const loadMessages = async () => {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('authToken');
+      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
       
       // Send to backend
       const response = await fetch(

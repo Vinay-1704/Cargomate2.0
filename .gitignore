@@ -1,0 +1,30 @@
+# Node / React
+node_modules/
+cargomate-react/node_modules/
+build/
+cargomate-react/build/
+.cache/
+cargomate-react/.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python / FastAPI
+venv/
+fastapi-backend/venv/
+.venv/
+__pycache__/
+*/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.db
+*.sqlite3
+
+# System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

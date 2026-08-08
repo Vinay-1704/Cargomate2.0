@@ -288,3 +288,43 @@
   cursor: not-allowed;
   transform: none;
 }
+
+/* ─── Light Theme Overrides ────────────────────────────────────────────────── */
+.light-theme .tracking-modal-content {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.light-theme .tracking-modal-header {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+.light-theme .tracking-modal-header h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .info-card {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme .info-row .label {
+  color: #64748b !important;
+}
+
+.light-theme .info-row .value {
+  color: #0f172a !important;
+}
+
+.light-theme .chat-messages {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme .message.driver .message-content {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+

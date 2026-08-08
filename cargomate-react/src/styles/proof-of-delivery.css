@@ -1,0 +1,319 @@
+/* Proof of Delivery Modal Styles */
+
+.pod-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.pod-modal-content {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 650px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  color: #f3f4f6;
+}
+
+.pod-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pod-modal-header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #22c55e;
+}
+
+.pod-error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border-left: 4px solid #ef4444;
+  color: #fca5a5;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pod-form,
+.pod-view-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pod-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #22c55e;
+  margin-top: 6px;
+}
+
+/* Photo Dropzone & Preview */
+.photo-upload-container {
+  width: 100%;
+}
+
+.photo-upload-dropzone {
+  border: 2px dashed rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.04);
+  border-radius: 12px;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.photo-upload-dropzone:hover {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.dropzone-icon {
+  font-size: 2.2rem;
+  color: #22c55e;
+  margin-bottom: 10px;
+}
+
+.photo-upload-dropzone span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.photo-upload-dropzone small {
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.photo-preview-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.photo-preview-box img,
+.pod-photo-display img {
+  max-width: 100%;
+  max-height: 260px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  object-fit: cover;
+}
+
+.btn-change-photo {
+  background: rgba(255, 255, 255, 0.1);
+  color: #d1d5db;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.btn-change-photo:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Form inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #d1d5db;
+}
+
+.form-group input,
+.form-group textarea {
+  background: #1f2937;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #f9fafb;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #22c55e;
+}
+
+/* Signature Canvas */
+.signature-canvas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.signature-canvas {
+  background: #030712;
+  border: 2px solid #22c55e;
+  border-radius: 10px;
+  touch-action: none;
+  cursor: crosshair;
+  width: 100%;
+  max-width: 500px;
+  height: 160px;
+}
+
+.signature-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.signature-actions small {
+  color: #9ca3af;
+  font-size: 0.78rem;
+}
+
+.btn-clear-sig {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.btn-clear-sig:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* Info Summary Box */
+.pod-info-summary {
+  background: #1f2937;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.summary-row span {
+  color: #9ca3af;
+}
+
+.summary-row strong {
+  color: #f3f4f6;
+}
+
+.driver-notes-box,
+.shipper-notes-box {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid #22c55e;
+}
+
+.driver-notes-box small,
+.shipper-notes-box small {
+  color: #9ca3af;
+  display: block;
+}
+
+.driver-notes-box p,
+.shipper-notes-box p {
+  margin: 4px 0 0 0;
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+/* Actions */
+.pod-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* View Component Grid */
+.pod-status-badge {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.pod-status-badge.verified {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.pod-grid-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .pod-grid-images {
+    grid-template-columns: 1fr;
+  }
+}
+
+.image-block h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.image-block img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #030712;
+}
+
+.sig-preview-wrapper img {
+  padding: 10px;
+  object-fit: contain;
+  max-height: 120px;
+}

@@ -20,10 +20,11 @@ function RatingModal({ shipment, onClose, onSuccess }) {
     setSubmitting(true);
 
     try {
-      const response = await fetch(`${API_URL}/shipments/${shipment._id}/rating`, {
+      const targetId = shipment.id || shipment.shipment_id || shipment._id;
+      const response = await fetch(`${API_URL}/shipments/${targetId}/rating`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

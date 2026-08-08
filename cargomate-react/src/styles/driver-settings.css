@@ -122,3 +122,41 @@ select.form-input {
     padding: 20px;
   }
 }
+
+/* ─── Light Theme Overrides ────────────────────────────────────────────────── */
+.light-theme .settings-header h1 {
+  color: #0f172a !important;
+}
+
+.light-theme .settings-header p {
+  color: #64748b !important;
+}
+
+.light-theme .settings-section {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .settings-section h2 {
+  color: #0f172a !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+.light-theme .form-group label {
+  color: #0f172a !important;
+  font-weight: 600;
+}
+
+.light-theme .form-input {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light-theme .form-input:focus {
+  background: #ffffff !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15) !important;
+}
+

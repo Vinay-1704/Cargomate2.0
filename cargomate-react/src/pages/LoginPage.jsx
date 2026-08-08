@@ -51,12 +51,21 @@ function LoginPage() {
   };
 
   const handleSuccessfulLogin = (data) => {
-    // Store authentication data
-    localStorage.setItem('authToken', data.token);
-    localStorage.setItem('userData', JSON.stringify(data.user));
+    // ── Tab-isolated auth ────────────────────────────────────────────────────
+    // sessionStorage is PER TAB — so a driver tab and a shipper tab will never
+    // overwrite each other's credentials. localStorage is only used for
+    // "Remember Me" convenience (reading on a fresh tab open).
+    sessionStorage.setItem('authToken', data.token);
+    sessionStorage.setItem('userData', JSON.stringify(data.user));
 
     if (formData.rememberMe) {
-      localStorage.setItem('rememberLogin', 'true');
+      // Also persist to localStorage so a brand-new tab can restore the session
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userData', JSON.stringify(data.user));
+    } else {
+      // Clear any stale "remember me" data from a different account
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userData');
     }
 
     showSuccess(`Welcome back, ${data.user.name}! Redirecting...`);
@@ -64,13 +73,13 @@ function LoginPage() {
     // Redirect based on user role from database
     setTimeout(() => {
       if (data.user.role === 'shipper') {
-        console.log('âœ… Redirecting to Shipper Dashboard');
+        console.log('✅ Redirecting to Shipper Dashboard');
         navigate('/shipper-dashboard');
       } else if (data.user.role === 'driver') {
-        console.log('âœ… Redirecting to Driver Dashboard');
+        console.log('✅ Redirecting to Driver Dashboard');
         navigate('/driver-dashboard');
       } else {
-        console.error('âŒ Unknown user role:', data.user.role);
+        console.error('❌ Unknown user role:', data.user.role);
         showError('Invalid user role. Please contact support.');
       }
     }, 1500);

@@ -157,3 +157,62 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Light Theme Overrides for Support ───────────────────────────────────── */
+.light-theme .support-header h1 {
+  color: #0f172a !important;
+}
+
+.light-theme .support-header p {
+  color: #64748b !important;
+}
+
+.light-theme .support-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .support-card h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .support-detail {
+  color: #64748b !important;
+}
+
+.light-theme .support-btn {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light-theme .support-btn:hover {
+  background: #f8fafc !important;
+  color: #16a34a !important;
+  border-color: #16a34a !important;
+}
+
+.light-theme .faq-section {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .faq-section h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .faq-item {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme .faq-item h3 {
+  color: #15803d !important;
+}
+
+.light-theme .faq-item p {
+  color: #334155 !important;
+}
+

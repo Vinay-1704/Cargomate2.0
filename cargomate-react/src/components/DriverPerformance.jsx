@@ -27,7 +27,7 @@ function DriverPerformance({ currentUser }) {
       
       const response = await fetch(`${API_URL}/driver/${currentUser.id}/performance`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
         }
       });
 

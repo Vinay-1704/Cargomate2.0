@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import LiveTrackingMap from './LiveTrackingMap';
 import '../styles/tracking-modal.css';
+import '../styles/live-tracking.css';
 
 function TrackingModal({ shipment, driver, onClose }) {
   const [messages, setMessages] = useState([
@@ -33,7 +35,7 @@ useEffect(() => {
 // Add this function
 const loadMessages = async () => {
   try {
-    const token = localStorage.getItem('authToken');
+    const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
     const response = await fetch(
       `http://localhost:3000/api/messages/${shipment.shipment_id}`,
       {
@@ -65,7 +67,7 @@ const loadMessages = async () => {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('authToken');
+      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
       
       // Send to backend
       const response = await fetch(
@@ -84,7 +86,7 @@ const loadMessages = async () => {
       );
 
       if (response.ok) {
-        // ✅ ADD to local state immediately (don't wait for backend)
+        // ADD to local state immediately (don't wait for backend)
         const newMsg = {
           id: Date.now(),
           shipment_id: shipment.shipment_id,
@@ -95,10 +97,10 @@ const loadMessages = async () => {
         
         setMessages(prev => [...prev, newMsg]);
         setNewMessage('');
-        console.log('✅ Message added locally');
+        console.log('Message added locally');
       }
     } catch (error) {
-      console.error('❌ Error:', error);
+      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
@@ -108,14 +110,14 @@ const loadMessages = async () => {
     <div className="tracking-modal-overlay" onClick={onClose}>
       <div className="tracking-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="tracking-modal-header">
-          <h2>💬 Chat with Driver</h2>
+          <h2>📍 Live Tracking & Chat</h2>
           <button className="close-btn" onClick={onClose}>✕</button>
         </div>
 
         <div className="tracking-container">
-          {/* Left: Info */}
+          {/* Left: Info + Live Map */}
           <div className="tracking-section">
-            <h3> Trip Details</h3>
+            <h3>Trip Details</h3>
             <div className="shipment-info">
               <div className="info-row">
                 <span className="label">ID:</span>
@@ -131,7 +133,7 @@ const loadMessages = async () => {
               </div>
               <div className="info-row">
                 <span className="label">Driver:</span>
-                <span className="value">{driver?.name || 'Assigned'}</span>
+                <span className="value">{(typeof driver === 'object' && driver?.name) || shipment.driver_name || shipment.selected_driver_name || (typeof driver === 'string' && driver) || 'Assigned'}</span>
               </div>
               <div className="info-row">
                 <span className="label">Status:</span>
@@ -141,12 +143,9 @@ const loadMessages = async () => {
               </div>
             </div>
 
+            {/* Live Map replaces the old placeholder */}
             <div className="live-map">
-              <div className="map-icon">🗺️</div>
-              <p>Live Map</p>
-              <div className="tracking-badge">
-                <div className="pulse"></div> Live
-              </div>
+              <LiveTrackingMap shipment={shipment} />
             </div>
           </div>
 

@@ -12,7 +12,7 @@
 }
 
 .billing-header h1 {
-  color: #fff;
+  color: var(--text-primary, #fff);
   font-size: 2rem;
   display: flex;
   align-items: center;
@@ -21,9 +21,9 @@
 
 .refresh-btn {
   padding: 10px 20px;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  color: #fff;
+  background: var(--bg-tertiary, #2a2a2a);
+  border: 1px solid var(--border-color, #444);
+  color: var(--text-primary, #fff);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -46,19 +46,19 @@
 }
 
 .billing-stat-card {
-  background: #1e1e1e;
+  background: var(--card-bg, #1e1e1e);
   border-radius: 12px;
   padding: 25px;
   display: flex;
   align-items: center;
   gap: 20px;
-  border: 1px solid #333;
+  border: 1px solid var(--border-color, #333);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .billing-stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .billing-stat-card .stat-icon {
@@ -94,12 +94,12 @@
 .stat-content .stat-value {
   font-size: 2rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin-bottom: 5px;
 }
 
 .stat-content .stat-label {
-  color: #888;
+  color: var(--text-secondary, #888);
   font-size: 0.9rem;
 }
 
@@ -108,7 +108,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid var(--border-color, #333);
   padding-bottom: 0;
 }
 
@@ -116,7 +116,7 @@
   padding: 12px 24px;
   background: none;
   border: none;
-  color: #888;
+  color: var(--text-secondary, #888);
   cursor: pointer;
   font-weight: 500;
   border-bottom: 3px solid transparent;
@@ -136,10 +136,10 @@
 
 /* Table */
 .billing-table-container {
-  background: #1e1e1e;
+  background: var(--card-bg, #1e1e1e);
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #333;
+  border: 1px solid var(--border-color, #333);
 }
 
 .billing-table {
@@ -148,13 +148,13 @@
 }
 
 .billing-table thead {
-  background: #2a2a2a;
+  background: var(--bg-tertiary, #2a2a2a);
 }
 
 .billing-table th {
   padding: 18px 15px;
   text-align: left;
-  color: #ccc;
+  color: var(--text-secondary, #ccc);
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -162,17 +162,17 @@
 }
 
 .billing-table tbody tr {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-color, #333);
   transition: background 0.2s;
 }
 
 .billing-table tbody tr:hover {
-  background: #2a2a2a;
+  background: var(--bg-tertiary, #2a2a2a);
 }
 
 .billing-table td {
   padding: 20px 15px;
-  color: #ccc;
+  color: var(--text-primary, #ccc);
 }
 
 .invoice-id {
@@ -199,78 +199,44 @@
   color: #f44336;
 }
 
-.package-cell {
-  color: #fff;
-}
-
-.package-weight {
-  font-size: 0.85rem;
-  color: #888;
-  margin-top: 3px;
-}
-
-.amount-cell {
-  color: #4CAF50 !important;
-  font-weight: bold;
-  font-size: 1.15rem;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-center {
-  text-align: center;
-}
-
 /* Status Badges */
 .status-badge {
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  display: inline-block;
 }
 
-.status-badge.completed {
-  background: #4CAF50;
-  color: #fff;
+.status-badge.paid {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border: 1px solid #4CAF50;
 }
 
 .status-badge.pending {
-  background: #FF9800;
-  color: #fff;
+  background: rgba(255, 152, 0, 0.2);
+  color: #FF9800;
+  border: 1px solid #FF9800;
 }
 
-.status-badge.active {
-  background: #2196F3;
-  color: #fff;
+.status-badge.in_progress {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196F3;
+  border: 1px solid #2196F3;
 }
 
 /* Action Buttons */
-.action-btn {
+.pay-btn, .invoice-btn {
   padding: 8px 16px;
-  border: none;
   border-radius: 6px;
+  border: none;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
   transition: all 0.3s;
-}
-
-.download-btn {
-  background: #4CAF50;
-  color: #fff;
-}
-
-.download-btn:hover {
-  background: #45a049;
-  transform: translateY(-2px);
 }
 
 .pay-btn {
@@ -280,65 +246,99 @@
 
 .pay-btn:hover {
   background: #1976D2;
-  transform: translateY(-2px);
 }
 
-/* Empty State */
-.empty-state {
+.invoice-btn {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.invoice-btn:hover {
+  background: #388E3C;
+}
+
+.empty-billing {
+  padding: 60px 20px;
   text-align: center;
-  padding: 80px 20px;
-  color: #888;
+  color: var(--text-secondary, #888);
 }
 
-.empty-state i {
+.empty-billing i {
   font-size: 4rem;
   margin-bottom: 20px;
-  color: #444;
+  opacity: 0.5;
 }
 
-.empty-state h3 {
-  color: #ccc;
-  margin-bottom: 10px;
+/* ─── Light Theme Specific Overrides ───────────────────────────────────────── */
+.light-theme .billing-header h1 {
+  color: #0f172a;
 }
 
-/* Loading State */
-.billing-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  color: #888;
+.light-theme .refresh-btn {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
 }
 
-.billing-loading i {
-  font-size: 3rem;
-  margin-bottom: 20px;
-  color: #4CAF50;
+.light-theme .refresh-btn:hover {
+  background: #f8fafc;
+  border-color: #16a34a;
+  color: #16a34a;
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
-  .billing-table-container {
-    overflow-x: auto;
-  }
-  
-  .billing-table {
-    min-width: 1000px;
-  }
+.light-theme .billing-stat-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-@media (max-width: 768px) {
-  .billing-stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .billing-filters {
-    flex-wrap: wrap;
-  }
-  
-  .billing-header {
-    flex-direction: column;
-    gap: 15px;
-  }
+.light-theme .stat-content .stat-value {
+  color: #0f172a;
+}
+
+.light-theme .stat-content .stat-label {
+  color: #64748b;
+}
+
+.light-theme .billing-filters {
+  border-bottom-color: #e2e8f0;
+}
+
+.light-theme .filter-btn {
+  color: #64748b;
+}
+
+.light-theme .filter-btn:hover {
+  color: #16a34a;
+}
+
+.light-theme .filter-btn.active {
+  color: #16a34a;
+  border-bottom-color: #16a34a;
+}
+
+.light-theme .billing-table-container {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.light-theme .billing-table thead {
+  background: #f8fafc;
+}
+
+.light-theme .billing-table th {
+  color: #475569;
+}
+
+.light-theme .billing-table tbody tr {
+  border-bottom-color: #f1f5f9;
+}
+
+.light-theme .billing-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.light-theme .billing-table td {
+  color: #1e293b;
 }

@@ -1,5 +1,7 @@
 import TripChatModal from '../components/TripChatModal';
-import React, { useState, useEffect, useCallback } from 'react';
+import ProofOfDeliveryModal from '../components/ProofOfDeliveryModal';
+import RouteOptimizer from '../components/RouteOptimizer';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DriverEarnings from '../components/DriverEarnings';
 import DriverPerformance from '../components/DriverPerformance';  // ← ADD THIS LINE
@@ -10,6 +12,7 @@ import Toast from '../components/Toast';
 import { useToast } from '../hooks/useToast';
 
 import '../styles/driver-dashboard.css';
+import '../styles/live-tracking.css';
 
 const API_URL = 'http://localhost:3000/api';
 
@@ -24,6 +27,7 @@ function DriverDashboard() {
   const [availableJobs, setAvailableJobs] = useState([]);
   const [myTrips, setMyTrips] = useState([]);
   const [myBids, setMyBids] = useState([]);
+  const [invitations, setInvitations] = useState([]);
   
   const [stats, setStats] = useState({
     activeTrips: 0,
@@ -43,9 +47,16 @@ function DriverDashboard() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [bidAmount, setBidAmount] = useState('');
   const [bidMessage, setBidMessage] = useState('');
+  const [sharingLocation, setSharingLocation] = useState({});
+  const locationIntervals = useRef({});
   const [tripChatModal, setTripChatModal] = useState({
   open: false,
   trip: null
+});
+  const [podModal, setPodModal] = useState({
+  open: false,
+  trip: null,
+  mode: 'submit'
 });
 
   useEffect(() => {
@@ -75,8 +86,8 @@ function DriverDashboard() {
   
 
   const checkAuthentication = () => {
-    const token = localStorage.getItem('authToken');
-    const userData = localStorage.getItem('userData');
+    const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+    const userData = sessionStorage.getItem('userData') || localStorage.getItem('userData');
     
     if (!token || !userData) {
       navigate('/login');
@@ -90,8 +101,9 @@ function DriverDashboard() {
         return;
       }
       setCurrentUser(user);
-       console.log('✅ Driver authenticated:', user.name, 'ID:', user.id);
+      console.log('✅ Driver authenticated:', user.name, 'ID:', user.id);
     } catch (error) {
+      sessionStorage.clear();
       localStorage.clear();
       navigate('/login');
     }
@@ -123,12 +135,16 @@ function DriverDashboard() {
       let trips = storedTrips ? JSON.parse(storedTrips) : [];
       
       try {
-        const [bidsResponse, tripsResponse] = await Promise.allSettled([
+        const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+        const [bidsResponse, tripsResponse, invResponse] = await Promise.allSettled([
           fetch(`${API_URL}/bids/driver/${currentUser.id}`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+            headers: { 'Authorization': `Bearer ${token}` }
           }),
           fetch(`${API_URL}/trips/driver/${currentUser.id}`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch(`${API_URL}/invitations/driver/${currentUser.id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
           })
         ]);
         
@@ -140,6 +156,11 @@ function DriverDashboard() {
         if (tripsResponse.status === 'fulfilled' && tripsResponse.value?.ok) {
           const tripsData = await tripsResponse.value.json();
           trips = tripsData.trips || [];
+        }
+
+        if (invResponse.status === 'fulfilled' && invResponse.value?.ok) {
+          const invData = await invResponse.value.json();
+          setInvitations(invData.invitations || []);
         }
       } catch (error) {
         console.log('Using stored data');
@@ -156,14 +177,15 @@ function DriverDashboard() {
 
   const loadAvailableJobs = async () => {
     try {
+      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
       const response = await fetch(`${API_URL}/shipments/available`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       
       if (response && response.ok) {
         const data = await response.json();
         setAvailableJobs(data.shipments || []);
-       console.log('✅ Loaded jobs:', data.shipments?.length || 0);
+        console.log('✅ Loaded jobs:', data.shipments?.length || 0);
       }
     } catch (error) {
       console.error('❌ Error loading jobs:', error);
@@ -262,6 +284,8 @@ useEffect(() => {
   };
 
   const logout = () => {
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('userData');
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     navigate('/login');
@@ -338,7 +362,7 @@ useEffect(() => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
         },
         body: JSON.stringify({
           shipment_id: selectedJob.shipment_id,
@@ -388,6 +412,72 @@ useEffect(() => {
     return badges[status] || <span className="badge">{status}</span>;
   };
 
+  // ─── Location sharing functions ────────────────────────────────────
+  const sendLocationUpdate = async (shipmentId, lat, lon) => {
+    try {
+      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+      await fetch(`${API_URL}/trips/${shipmentId}/location`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ lat, lon }),
+      });
+      console.log(`[GPS] Location sent: ${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+    } catch (err) {
+      console.error('[GPS] Failed to send location:', err);
+    }
+  };
+
+  const startShareLocation = (shipmentId) => {
+    if (sharingLocation[shipmentId]) return;
+
+    if (!navigator.geolocation) {
+      showToast('Geolocation is not supported by your browser', 'error');
+      return;
+    }
+
+    // Send initial position
+    navigator.geolocation.getCurrentPosition(
+      (pos) => sendLocationUpdate(shipmentId, pos.coords.latitude, pos.coords.longitude),
+      (err) => {
+        console.error('[GPS] Permission denied or error:', err);
+        showToast('Please allow location access', 'error');
+      },
+      { enableHighAccuracy: true }
+    );
+
+    // Then send every 10 seconds
+    const intervalId = setInterval(() => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => sendLocationUpdate(shipmentId, pos.coords.latitude, pos.coords.longitude),
+        (err) => console.error('[GPS] Error:', err),
+        { enableHighAccuracy: true }
+      );
+    }, 10000);
+
+    locationIntervals.current[shipmentId] = intervalId;
+    setSharingLocation((prev) => ({ ...prev, [shipmentId]: true }));
+    showToast('Location sharing started!', 'success');
+  };
+
+  const stopShareLocation = (shipmentId) => {
+    if (locationIntervals.current[shipmentId]) {
+      clearInterval(locationIntervals.current[shipmentId]);
+      delete locationIntervals.current[shipmentId];
+    }
+    setSharingLocation((prev) => ({ ...prev, [shipmentId]: false }));
+    showToast('Location sharing stopped', 'info');
+  };
+
+  // Cleanup all location intervals on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(locationIntervals.current).forEach(clearInterval);
+    };
+  }, []);
+
   if (!currentUser) {
     return <div className="loading-spinner"><i className="fas fa-spinner fa-spin"></i></div>;
   }
@@ -397,7 +487,7 @@ useEffect(() => {
     alert("Trip ID is undefined. Cannot mark delivered.");
     return;
   }
-  const token = localStorage.getItem('authToken');
+  const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
   await fetch(`http://localhost:3000/api/trips/${tripId}/status`, {
     method: "PUT",
     headers: {
@@ -449,7 +539,7 @@ useEffect(() => {
 
       <div className="dashboard-layout">
         <nav className="sidebar">
-          {['dashboard', 'my-trips', 'available-jobs', 'vehicle-status', 'earnings', 'performance', 'settings', 'support'].map(section => (
+          {['dashboard', 'invitations', 'my-trips', 'available-jobs', 'route-optimizer', 'vehicle-status', 'earnings', 'performance', 'settings', 'support'].map(section => (
             <a
               key={section}
               href="#"
@@ -458,14 +548,16 @@ useEffect(() => {
             >
               <i className={`fas fa-${
                 section === 'dashboard' ? 'tachometer-alt' :
+                section === 'invitations' ? 'envelope-open-text' :
                 section === 'my-trips' ? 'route' :
                 section === 'available-jobs' ? 'search' :
+                section === 'route-optimizer' ? 'map-marked-alt' :
                 section === 'vehicle-status' ? 'truck' :
                 section === 'earnings' ? 'rupee-sign' :
                 section === 'performance' ? 'chart-line' :
                 section === 'settings' ? 'cog' : 'life-ring'
               }`}></i>
-              {section.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+              {section === 'invitations' ? `Invitations (${invitations.length})` : section.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
             </a>
           ))}
         </nav>
@@ -548,6 +640,58 @@ useEffect(() => {
             </div>
           )}
 
+          {activeSection === 'invitations' && (
+            <div className="section active">
+              <div className="section-header">
+                <h1>Direct Job Invitations</h1>
+                <button className="btn btn-secondary" onClick={loadDriverData}>
+                  <i className="fas fa-sync"></i> Refresh
+                </button>
+              </div>
+
+              <div className="jobs-grid">
+                {invitations.length > 0 ? (
+                  invitations.map(inv => (
+                    <div key={inv.id} className="job-card" style={{ borderLeft: '4px solid #6366f1' }}>
+                      <div className="job-header">
+                        <h3>#{inv.shipment_id}</h3>
+                        <span className="badge badge-primary">Direct Invitation</span>
+                      </div>
+                      <div className="job-body">
+                        {inv.shipment ? (
+                          <>
+                            <p><strong>Route:</strong> {inv.shipment.from_location} → {inv.shipment.to_location}</p>
+                            <p><strong>Package:</strong> {inv.shipment.package_type} ({inv.shipment.package_weight}kg)</p>
+                            <p><strong>Required Vehicle:</strong> {inv.shipment.vehicle_type?.replace(/_/g, ' ')}</p>
+                            <p><strong>Shipper:</strong> {inv.shipment.shipper_name} ({inv.shipment.shipper_phone})</p>
+                          </>
+                        ) : (
+                          <p>Shipment details loading...</p>
+                        )}
+                        <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px' }}>
+                          Invited on: {inv.created_at ? new Date(inv.created_at).toLocaleDateString() : 'Recently'}
+                        </p>
+                      </div>
+                      <div className="job-footer">
+                        {inv.shipment && (
+                          <button className="btn btn-primary" onClick={() => openBidModal(inv.shipment)}>
+                            <i className="fas fa-gavel"></i> Place Bid for Invited Job
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-state">
+                    <i className="fas fa-envelope-open-text" style={{ fontSize: '48px', color: '#64748b', marginBottom: '12px' }}></i>
+                    <h3>No Direct Invitations Yet</h3>
+                    <p style={{ color: '#94a3b8' }}>When shippers select you from AI Driver Recommendations, their direct job requests will appear here!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {activeSection === 'my-trips' && (
   <div className="section active">
     <div className="section-header">
@@ -605,7 +749,7 @@ useEffect(() => {
                 className="btn btn-primary" 
                 style={{ width: '100%', marginTop: '15px' }}
                 onClick={() => {
-                  console.log('💬 Opening chat for trip:', trip.shipment_id);
+                  console.log('Opening chat for trip:', trip.shipment_id);
                   setTripChatModal({
                     open: true,
                     trip: trip
@@ -614,16 +758,47 @@ useEffect(() => {
               >
                 <i className="fas fa-comments"></i> Chat with Shipper
               </button>
-              {/* ADD this below: MARK AS DELIVERED BUTTON */}
-{trip.status === "active" && (
-  <button
-    className="btn btn-success"
-    style={{ width: "100%", marginTop: 8 }}
-    onClick={() => markTripAsDelivered(trip._id ||trip.id||trip.trip_id)}
-  >
-    <i className="fas fa-check-circle"></i> Mark as Delivered
-  </button>
-)}
+
+              {/* Share Location Button */}
+              {trip.status === 'active' && (
+                <button
+                  className={`share-location-btn ${sharingLocation[trip.shipment_id] ? 'sharing' : 'idle'}`}
+                  onClick={() =>
+                    sharingLocation[trip.shipment_id]
+                      ? stopShareLocation(trip.shipment_id)
+                      : startShareLocation(trip.shipment_id)
+                  }
+                >
+                  <i className={`fas fa-${sharingLocation[trip.shipment_id] ? 'stop-circle' : 'satellite-dish'}`}></i>
+                  {sharingLocation[trip.shipment_id] ? 'Stop Sharing Location' : 'Share Live Location'}
+                </button>
+              )}
+              {sharingLocation[trip.shipment_id] && (
+                <div className="location-status-indicator">
+                  <div className="dot"></div>
+                  Sharing location every 10s
+                </div>
+              )}
+
+              {/* Proof of Delivery Buttons */}
+              {(trip.status === "active" || trip.status === "in_transit") && (
+                <button
+                  className="btn btn-success"
+                  style={{ width: "100%", marginTop: 8 }}
+                  onClick={() => setPodModal({ open: true, trip, mode: 'submit' })}
+                >
+                  <i className="fas fa-camera"></i> 📸 Submit Proof of Delivery
+                </button>
+              )}
+              {(trip.status === "completed" || trip.status === "delivered") && (
+                <button
+                  className="btn btn-secondary"
+                  style={{ width: "100%", marginTop: 8, background: 'rgba(34, 197, 94, 0.15)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.3)' }}
+                  onClick={() => setPodModal({ open: true, trip, mode: 'view' })}
+                >
+                  <i className="fas fa-file-invoice"></i> 📄 View Proof of Delivery
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -635,6 +810,13 @@ useEffect(() => {
         </div>
       )}
     </div>
+  </div>
+)}
+
+{/* Route Optimizer Section */}
+{activeSection === 'route-optimizer' && (
+  <div className="section active">
+    <RouteOptimizer currentUser={currentUser} />
   </div>
 )}
 
@@ -858,6 +1040,16 @@ useEffect(() => {
     />
   </div>
 )}
+
+      {/* Proof of Delivery Modal */}
+      {podModal.open && (
+        <ProofOfDeliveryModal
+          trip={podModal.trip}
+          mode={podModal.mode}
+          onClose={() => setPodModal({ open: false, trip: null, mode: 'submit' })}
+          onSuccess={() => loadDriverData()}
+        />
+      )}
 
     </>
   );

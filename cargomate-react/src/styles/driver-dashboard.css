@@ -1410,3 +1410,95 @@ body {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ─── Light Theme Global Overrides ────────────────────────────────────────── */
+body.light-theme,
+.light-theme .main-content,
+.light-theme .dashboard-layout {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.light-theme .header {
+  background: #ffffff !important;
+  border-bottom-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .header .user-name {
+  color: #0f172a !important;
+}
+
+.light-theme .header .user-role {
+  color: #64748b !important;
+}
+
+.light-theme .sidebar {
+  background: #ffffff !important;
+  border-right-color: #e2e8f0 !important;
+}
+
+.light-theme .nav-item {
+  color: #475569 !important;
+}
+
+.light-theme .nav-item:hover {
+  background: #f1f5f9 !important;
+  color: #16a34a !important;
+}
+
+.light-theme .nav-item.active {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+.light-theme .content-card,
+.light-theme .stat-card,
+.light-theme .trip-card,
+.light-theme .job-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+.light-theme .stat-value {
+  color: #0f172a !important;
+}
+
+.light-theme .stat-label {
+  color: #64748b !important;
+}
+
+.light-theme .form-group label {
+  color: #0f172a !important;
+  font-weight: 600;
+}
+
+.light-theme input,
+.light-theme select,
+.light-theme textarea {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.light-theme select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-theme .section-header h1,
+.light-theme .section-header h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .section-header p {
+  color: #64748b !important;
+}
+

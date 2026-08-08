@@ -39,7 +39,7 @@ function Billing({ currentUser }) {
       
       const response = await fetch(`${API_URL}/shipments/shipper/${currentUser.id}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
         }
       });
 
@@ -114,7 +114,7 @@ function Billing({ currentUser }) {
       const response = await fetch(`${API_URL}/shipments/${shipment._id}/payment`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
         }
       });

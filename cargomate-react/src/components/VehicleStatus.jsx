@@ -41,7 +41,7 @@ const handleSave = async () => {
     const response = await fetch(`${API_URL}/users/${currentUser.id}`, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

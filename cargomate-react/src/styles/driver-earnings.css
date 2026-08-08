@@ -290,3 +290,51 @@
     gap: 15px;
   }
 }
+
+/* ─── Light Theme Overrides for Driver Earnings ───────────────────────────── */
+.light-theme .earnings-header h1 {
+  color: #0f172a !important;
+}
+
+.light-theme .earnings-stat-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .earnings-stat-card .stat-value {
+  color: #0f172a !important;
+}
+
+.light-theme .earnings-stat-card .stat-label {
+  color: #64748b !important;
+}
+
+.light-theme .earnings-chart-container,
+.light-theme .earnings-history-container {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .earnings-chart-container h2,
+.light-theme .earnings-history-container h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .earnings-table {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.light-theme .earnings-table th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.light-theme .earnings-table td {
+  color: #1e293b !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+

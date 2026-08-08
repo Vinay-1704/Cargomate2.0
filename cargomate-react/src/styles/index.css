@@ -10,11 +10,9 @@
   min-height: 100vh;
 }
 
-
 body {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-    /* Fallback gradient if image doesn't load */
     min-height: 100vh;
     color: white;
     overflow-x: hidden;
@@ -22,66 +20,189 @@ body {
     padding: 0;
 }
 
-/* Add this for the hero section specifically */
-.hero {
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)),
-                url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+/* ─── MASTER LIGHT THEME ENGINE FOR ALL DASHBOARDS ───────────────────────── */
+body.light-theme {
+  background: #f8fafc !important;
+  color: #0f172a !important;
 }
 
-/* Header */
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    padding: 20px 50px;
-    background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4,
+body.light-theme h5,
+body.light-theme h6,
+body.light-theme .vehicle-header h1,
+body.light-theme .performance-header h1,
+body.light-theme .earnings-header h1,
+body.light-theme .settings-header h1,
+body.light-theme .support-header h1,
+body.light-theme .card-header h2,
+body.light-theme .stat-value,
+body.light-theme .detail-value {
+  color: #0f172a !important;
 }
 
-.header.scrolled {
-    background: rgba(0, 0, 0, 0.8);
+body.light-theme p,
+body.light-theme span,
+body.light-theme .detail-label,
+body.light-theme .stat-label,
+body.light-theme .performance-header p,
+body.light-theme .vehicle-header p,
+body.light-theme .earnings-header p,
+body.light-theme .settings-header p,
+body.light-theme .support-header p {
+  color: #475569 !important;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 24px;
-    font-weight: 700;
-    color: #32CD32;
+/* All Cards across Driver and Shipper Dashboards */
+body.light-theme .content-card,
+body.light-theme .stat-card,
+body.light-theme .billing-stat-card,
+body.light-theme .earnings-stat-card,
+body.light-theme .vehicle-info-card,
+body.light-theme .vehicle-health-card,
+body.light-theme .settings-card,
+body.light-theme .support-card,
+body.light-theme .performance-card,
+body.light-theme .recommendation-card,
+body.light-theme .shipment-card,
+body.light-theme .trip-card,
+body.light-theme .job-card,
+body.light-theme .billing-table-container,
+body.light-theme .earnings-chart-container,
+body.light-theme .earnings-history-container,
+body.light-theme .optimizer-form-card,
+body.light-theme .route-card,
+body.light-theme .active-metrics-bar {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
 }
 
-.logo i {
-    background: #32CD32;
-    padding: 8px;
-    border-radius: 8px;
-    color: white;
-    font-size: 20px;
+/* Detail Rows & Dividers */
+body.light-theme .detail-row,
+body.light-theme .card-header,
+body.light-theme .billing-filters {
+  border-bottom-color: #e2e8f0 !important;
 }
 
-.contact-btn {
-    background: #32CD32;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
+/* Inputs & Form Controls */
+body.light-theme input,
+body.light-theme select,
+body.light-theme textarea,
+body.light-theme .form-input,
+body.light-theme .form-textarea,
+body.light-theme .filter-select,
+body.light-theme .detail-input {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
 }
 
-.contact-btn:hover {
-    background: #228B22;
-    transform: translateY(-2px);
+body.light-theme input::placeholder,
+body.light-theme textarea::placeholder,
+body.light-theme .form-input::placeholder,
+body.light-theme .form-textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+body.light-theme input:focus,
+body.light-theme select:focus,
+body.light-theme textarea:focus,
+body.light-theme .detail-input:focus {
+  background-color: #ffffff !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15) !important;
+}
+
+body.light-theme select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Action & Refresh Buttons */
+body.light-theme .refresh-btn,
+body.light-theme .btn-secondary {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-theme .refresh-btn:hover,
+body.light-theme .btn-secondary:hover {
+  background: #f8fafc !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* Header & Navigation Bar */
+body.light-theme .header {
+  background: #ffffff !important;
+  border-bottom-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme .header .user-name {
+  color: #0f172a !important;
+}
+
+body.light-theme .header .user-role {
+  color: #64748b !important;
+}
+
+body.light-theme .sidebar {
+  background: #ffffff !important;
+  border-right-color: #e2e8f0 !important;
+}
+
+body.light-theme .nav-item {
+  color: #475569 !important;
+}
+
+body.light-theme .nav-item:hover {
+  background: #f1f5f9 !important;
+  color: #16a34a !important;
+}
+
+body.light-theme .nav-item.active {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+/* All Tables Across All Dashboards */
+body.light-theme table,
+body.light-theme .table-container,
+body.light-theme .shipments-table,
+body.light-theme .billing-table,
+body.light-theme .earnings-table {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+body.light-theme table th,
+body.light-theme .shipments-table th,
+body.light-theme .billing-table th,
+body.light-theme .earnings-table th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+body.light-theme table td,
+body.light-theme .shipments-table td,
+body.light-theme .billing-table td,
+body.light-theme .earnings-table td {
+  color: #1e293b !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+body.light-theme table tr:hover,
+body.light-theme .shipments-table tr:hover,
+body.light-theme .billing-table tr:hover,
+body.light-theme .earnings-table tr:hover {
+  background: #f8fafc !important;
 }
 
 /* Hero Section */
@@ -94,6 +215,11 @@ body {
     text-align: center;
     padding: 120px 50px 50px;
     position: relative;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)),
+                url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .hero-content {
@@ -145,137 +271,4 @@ body {
     background: #228B22;
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(50, 205, 50, 0.4);
-}
-
-/* Partners Section */
-.partners-section {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 60px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.partners-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 50px;
-    text-align: center;
-}
-
-.partners-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
-    letter-spacing: 2px;
-    margin-bottom: 40px;
-    text-transform: uppercase;
-}
-
-.partners-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 30px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.partner-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 20px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
-
-.partner-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-5px);
-}
-
-.partner-item i {
-    font-size: 2rem;
-    color: #32CD32;
-    margin-bottom: 8px;
-}
-
-.partner-item span {
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .header {
-        padding: 15px 20px;
-    }
-    
-    .hero {
-        padding: 100px 20px 40px;
-    }
-    
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-    
-    .hero-content p {
-        font-size: 1.1rem;
-    }
-    
-    .cta-button {
-        padding: 16px 32px;
-        font-size: 1rem;
-    }
-    
-    .partners-container {
-        padding: 0 20px;
-    }
-    
-    .partners-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-content h1 {
-        font-size: 2rem;
-    }
-    
-    .logo {
-        font-size: 20px;
-    }
-    
-    .contact-btn {
-        padding: 10px 18px;
-        font-size: 14px;
-    }
-    
-    .partners-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.hero-content {
-    animation: fadeInUp 1s ease;
-}
-
-.partners-section {
-    animation: fadeInUp 1s ease 0.3s both;
 }

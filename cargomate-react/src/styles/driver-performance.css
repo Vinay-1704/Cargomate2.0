@@ -349,3 +349,79 @@
     gap: 15px;
   }
 }
+
+/* ─── Light Theme Overrides for Performance ───────────────────────────────── */
+.light-theme .performance-header h1 {
+  color: #0f172a !important;
+}
+
+.light-theme .performance-header p {
+  color: #64748b !important;
+}
+
+.light-theme .stat-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .stat-value {
+  color: #0f172a !important;
+}
+
+.light-theme .stat-label {
+  color: #0f172a !important;
+}
+
+.light-theme .stat-description {
+  color: #64748b !important;
+}
+
+.light-theme .rating-distribution-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .rating-distribution-card h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .rating-label {
+  color: #0f172a !important;
+}
+
+.light-theme .rating-count {
+  color: #64748b !important;
+}
+
+.light-theme .rating-bar-bg {
+  background: #f1f5f9 !important;
+}
+
+.light-theme .reviews-section h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .review-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .reviewer-name {
+  color: #0f172a !important;
+}
+
+.light-theme .review-date {
+  color: #64748b !important;
+}
+
+.light-theme .review-comment {
+  color: #334155 !important;
+}
+
+.light-theme .shipment-route {
+  color: #64748b !important;
+}
+
