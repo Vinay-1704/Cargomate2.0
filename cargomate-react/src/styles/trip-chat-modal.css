@@ -193,3 +193,104 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* ─── Light Theme Overrides for Trip Chat Modal ────────────────────────── */
+.light-theme .trip-chat-modal {
+  background: #ffffff !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25) !important;
+}
+
+.light-theme .chat-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.light-theme .chat-header-info h2 {
+  color: #15803d !important;
+}
+
+.light-theme .chat-header-info p {
+  color: #64748b !important;
+}
+
+.light-theme .close-btn {
+  color: #64748b !important;
+}
+
+.light-theme .close-btn:hover {
+  color: #0f172a !important;
+}
+
+.light-theme .chat-trip-info {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.light-theme .info-label {
+  color: #64748b !important;
+}
+
+.light-theme .info-value {
+  color: #0f172a !important;
+}
+
+.light-theme .chat-messages {
+  background: #ffffff !important;
+}
+
+.light-theme .message.shipper .message-content {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.light-theme .message.shipper .message-sender {
+  color: #475569 !important;
+}
+
+.light-theme .message.shipper .message-time {
+  color: #64748b !important;
+}
+
+.light-theme .chat-input-form {
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.light-theme .chat-input {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light-theme .chat-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-theme .chat-input:focus {
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15) !important;
+}
+
+/* ─── Mobile Responsiveness ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .trip-chat-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+  }
+
+  .chat-trip-info {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    padding: 10px 14px !important;
+  }
+
+  .info-item {
+    min-width: 110px !important;
+  }
+}
+
+

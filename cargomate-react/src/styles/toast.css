@@ -87,3 +87,15 @@
 .toast-close:hover {
   opacity: 1;
 }
+
+/* ─── Mobile Responsiveness ────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .toast {
+    min-width: unset !important;
+    width: calc(100% - 32px) !important;
+    left: 16px !important;
+    transform: none !important;
+    top: 16px !important;
+  }
+}
+

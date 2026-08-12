@@ -22,6 +22,7 @@ const { toasts, showToast, removeToast } = useToast();  // ADD
   const [currentUser, setCurrentUser] = useState(null);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [theme, setTheme] = useState('dark');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userShipments, setUserShipments] = useState([]);
   const [filteredShipments, setFilteredShipments] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
@@ -568,6 +569,9 @@ const handleRatingSuccess = () => {
       ))}
       {/* Header */}
       <header className="header">
+        <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          <i className={`fas ${sidebarOpen ? 'fa-times' : 'fa-bars'}`}></i>
+        </button>
         <div className="logo">
           <i className="fas fa-truck"></i>
           CargoMate
@@ -591,8 +595,9 @@ const handleRatingSuccess = () => {
 
       {/* Dashboard Layout */}
       <div className="dashboard-layout">
+        {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
         {/* Sidebar */}
-        <nav className="sidebar">
+        <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           {[
             { key: 'dashboard', icon: 'tachometer-alt', label: 'Dashboard' },
             { key: 'create-shipment', icon: 'plus-circle', label: 'Create Shipment' },
@@ -607,7 +612,7 @@ const handleRatingSuccess = () => {
               key={nav.key}
               href="#"
               className={`nav-item ${activeSection === nav.key ? 'active' : ''}`}
-              onClick={(e) => { e.preventDefault(); switchToSection(nav.key); }}
+              onClick={(e) => { e.preventDefault(); switchToSection(nav.key); setSidebarOpen(false); }}
             >
               <i className={`fas fa-${nav.icon}`}></i>
               {nav.label}
@@ -1094,7 +1099,7 @@ const handleRatingSuccess = () => {
           {activeShipments.map((shipment) => (
             <div key={shipment.shipment_id} className="content-card" style={{ padding: 0, overflow: 'hidden', border: '1px solid rgba(34,197,94,0.2)' }}>
               {/* Card header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: 'linear-gradient(135deg, rgba(34,197,94,0.12), rgba(22,163,74,0.06))', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="track-card-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <span style={{ fontSize: 22 }}>🚛</span>
                   <div>
@@ -1102,7 +1107,7 @@ const handleRatingSuccess = () => {
                     <div style={{ fontSize: 12, color: '#94a3b8' }}>{shipment.from_location} → {shipment.to_location}</div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                   <span style={{ background: '#22c55e', color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'white', animation: 'pulse 1.5s ease-in-out infinite', display: 'inline-block' }}></span>
                     LIVE
@@ -1118,7 +1123,7 @@ const handleRatingSuccess = () => {
               </div>
 
               {/* Card body: shipment info + map + mini chat */}
-              <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr 300px', gap: 0, minHeight: 340 }}>
+              <div className="track-vehicle-grid">
                 {/* Left: shipment details */}
                 <div style={{ padding: '16px 20px', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <div style={{ fontSize: 13, color: '#22c55e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Shipment Info</div>
@@ -1431,8 +1436,46 @@ const handleRatingSuccess = () => {
   />
 )}
 
+      {/* Mobile Bottom Navigation Tab Bar */}
+      <nav className="mobile-bottom-nav">
+        <button 
+          className={`bottom-nav-item ${activeSection === 'dashboard' ? 'active' : ''}`}
+          onClick={() => switchToSection('dashboard')}
+        >
+          <i className="fas fa-tachometer-alt"></i>
+          <span>Home</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'create-shipment' ? 'active' : ''}`}
+          onClick={() => switchToSection('create-shipment')}
+        >
+          <i className="fas fa-plus-circle"></i>
+          <span>Post</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'my-shipments' ? 'active' : ''}`}
+          onClick={() => switchToSection('my-shipments')}
+        >
+          <i className="fas fa-boxes"></i>
+          <span>Shipments</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'track-vehicles' ? 'active' : ''}`}
+          onClick={() => switchToSection('track-vehicles')}
+        >
+          <i className="fas fa-truck"></i>
+          <span>Track</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'billing' ? 'active' : ''}`}
+          onClick={() => switchToSection('billing')}
+        >
+          <i className="fas fa-file-invoice-dollar"></i>
+          <span>Billing</span>
+        </button>
+      </nav>
     </>
   );
 }
 
-export default ShipperDashboard;
+export default ShipperDashboard;

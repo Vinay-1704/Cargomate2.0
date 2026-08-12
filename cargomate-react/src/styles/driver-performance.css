@@ -359,6 +359,7 @@
   color: #64748b !important;
 }
 
+/* Stat Cards */
 .light-theme .stat-card {
   background: #ffffff !important;
   border-color: #e2e8f0 !important;
@@ -370,13 +371,15 @@
 }
 
 .light-theme .stat-label {
-  color: #0f172a !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
 }
 
 .light-theme .stat-description {
   color: #64748b !important;
 }
 
+/* Rating Distribution */
 .light-theme .rating-distribution-card {
   background: #ffffff !important;
   border-color: #e2e8f0 !important;
@@ -391,12 +394,19 @@
   color: #0f172a !important;
 }
 
-.light-theme .rating-count {
-  color: #64748b !important;
+.light-theme .rating-bar-container {
+  background: #e2e8f0 !important;
 }
 
-.light-theme .rating-bar-bg {
-  background: #f1f5f9 !important;
+.light-theme .rating-count {
+  color: #475569 !important;
+}
+
+/* Reviews Section */
+.light-theme .reviews-section {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
 }
 
 .light-theme .reviews-section h2 {
@@ -404,24 +414,44 @@
 }
 
 .light-theme .review-card {
-  background: #ffffff !important;
+  background: #f8fafc !important;
   border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
 }
 
-.light-theme .reviewer-name {
-  color: #0f172a !important;
-}
-
+.light-theme .review-shipment,
 .light-theme .review-date {
   color: #64748b !important;
 }
 
-.light-theme .review-comment {
+.light-theme .review-route {
   color: #334155 !important;
 }
 
-.light-theme .shipment-route {
+.light-theme .review-route span {
+  color: #0f172a !important;
+  font-weight: 600;
+}
+
+.light-theme .review-comment {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+
+.light-theme .review-comment p {
+  color: #0f172a !important;
+}
+
+.light-theme .stars-display i.empty {
+  color: #cbd5e1 !important;
+}
+
+.light-theme .no-reviews h3 {
+  color: #0f172a !important;
+}
+
+.light-theme .no-reviews p {
   color: #64748b !important;
 }
 

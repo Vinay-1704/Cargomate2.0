@@ -342,3 +342,47 @@
 .light-theme .billing-table td {
   color: #1e293b;
 }
+
+/* ─── Mobile Responsiveness ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .billing-container {
+    padding: 12px;
+  }
+
+  .billing-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .billing-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .billing-filters {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 8px;
+  }
+
+  .billing-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .billing-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .billing-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .billing-header h1 {
+    font-size: 1.5rem;
+  }
+}
+

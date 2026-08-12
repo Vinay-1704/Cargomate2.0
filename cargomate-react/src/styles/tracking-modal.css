@@ -298,24 +298,38 @@
 }
 
 .light-theme .tracking-modal-header {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
   border-bottom-color: #e2e8f0 !important;
 }
 
 .light-theme .tracking-modal-header h2 {
-  color: #0f172a !important;
+  color: #ffffff !important;
 }
 
-.light-theme .info-card {
+.light-theme .shipment-info {
   background: #f8fafc !important;
-  border-color: #e2e8f0 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.light-theme .info-item label,
+.light-theme .info-item span,
+.light-theme .info-row .value {
+  color: #0f172a !important;
+  font-weight: 600 !important;
 }
 
 .light-theme .info-row .label {
   color: #64748b !important;
 }
 
-.light-theme .info-row .value {
-  color: #0f172a !important;
+.light-theme .tracking-section h3,
+.light-theme .chat-section h3 {
+  color: #15803d !important;
+}
+
+.light-theme .info-card {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
 }
 
 .light-theme .chat-messages {
@@ -327,4 +341,33 @@
   background: #e2e8f0 !important;
   color: #0f172a !important;
 }
+
+.light-theme .message-form input {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light-theme .message-form input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ─── Mobile Responsiveness ────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .tracking-modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+  }
+
+  .tracking-container {
+    grid-template-columns: 1fr !important;
+    padding: 12px !important;
+    gap: 14px !important;
+  }
+}
+
+
 

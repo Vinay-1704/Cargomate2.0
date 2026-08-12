@@ -35,31 +35,46 @@ const pointIcon = (color) => new L.DivIcon({
   iconAnchor: [12, 12],
 });
 
-// Component to handle auto-centering the map
+// Component to handle auto-centering the map safely
 function MapUpdater({ driverLocation, routeCoords, isFullscreen }) {
   const map = useMap();
   
   useEffect(() => {
-    // Use ResizeObserver to detect any container size changes (like fullscreen toggle) and force map to redraw tiles
-    const container = map.getContainer();
-    const observer = new ResizeObserver(() => {
-      map.invalidateSize();
-    });
-    observer.observe(container);
-    return () => observer.disconnect();
+    if (!map) return;
+    try {
+      const container = map.getContainer();
+      if (!container) return;
+      const observer = new ResizeObserver(() => {
+        if (map && map._mapPane && typeof map.invalidateSize === 'function') {
+          map.invalidateSize({ animate: false });
+        }
+      });
+      observer.observe(container);
+      return () => observer.disconnect();
+    } catch (e) {
+      console.warn('Map observer warning:', e);
+    }
   }, [map]);
 
   useEffect(() => {
-    if (routeCoords && routeCoords.length > 0) {
-      const bounds = L.latLngBounds(routeCoords);
-      if (driverLocation) {
-        bounds.extend([driverLocation.lat, driverLocation.lng]);
+    if (!map || !map._mapPane) return;
+    try {
+      if (routeCoords && routeCoords.length > 0) {
+        const bounds = L.latLngBounds(routeCoords);
+        if (driverLocation && driverLocation.lat && driverLocation.lng) {
+          bounds.extend([driverLocation.lat, driverLocation.lng]);
+        }
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [50, 50], animate: false });
+        }
+      } else if (driverLocation && driverLocation.lat && driverLocation.lng) {
+        map.setView([driverLocation.lat, driverLocation.lng], 13, { animate: false });
       }
-      map.fitBounds(bounds, { padding: [50, 50] });
-    } else if (driverLocation) {
-      map.setView([driverLocation.lat, driverLocation.lng], 13);
+    } catch (err) {
+      console.warn('Map bounds fit warning:', err);
     }
   }, [map, driverLocation, routeCoords, isFullscreen]);
+
   return null;
 }
 

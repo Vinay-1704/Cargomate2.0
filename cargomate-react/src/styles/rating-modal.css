@@ -250,3 +250,96 @@
     flex-direction: column;
   }
 }
+
+/* ─── Light Theme Overrides for Rating Modal ────────────────────────────── */
+.light-theme .rating-modal-content {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25) !important;
+}
+
+.light-theme .rating-modal-header {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+.light-theme .rating-modal-header h2 {
+  color: #0f172a !important;
+}
+
+.light-theme .close-btn {
+  color: #64748b !important;
+}
+
+.light-theme .close-btn:hover {
+  color: #0f172a !important;
+}
+
+.light-theme .shipment-info {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.light-theme .info-item {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+.light-theme .rating-section label,
+.light-theme .review-section label {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+.light-theme .star-btn {
+  color: #cbd5e1 !important;
+}
+
+.light-theme .star-btn.active {
+  color: #eab308 !important;
+}
+
+.light-theme .review-section textarea {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light-theme .review-section textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-theme .rating-modal-footer {
+  border-top-color: #e2e8f0 !important;
+}
+
+.light-theme .btn-cancel {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.light-theme .btn-cancel:hover:not(:disabled) {
+  background: #f8fafc !important;
+}
+
+/* ─── Mobile Responsiveness ────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .rating-modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+  }
+
+  .rating-modal-body {
+    padding: 16px !important;
+  }
+
+  .star-btn {
+    font-size: 2.2rem !important;
+  }
+}
+
+

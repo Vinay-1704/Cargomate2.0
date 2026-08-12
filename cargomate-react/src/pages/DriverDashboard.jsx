@@ -23,6 +23,7 @@ function DriverDashboard() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [theme, setTheme] = useState('dark');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
   const [availableJobs, setAvailableJobs] = useState([]);
   const [myTrips, setMyTrips] = useState([]);
@@ -516,6 +517,9 @@ useEffect(() => {
     ))}
     {/* ===== END TOAST CONTAINER ===== */}
       <header className="header">
+        <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          <i className={`fas ${sidebarOpen ? 'fa-times' : 'fa-bars'}`}></i>
+        </button>
         <div className="logo">
           <i className="fas fa-truck"></i>
           CargoMate
@@ -538,13 +542,14 @@ useEffect(() => {
       </header>
 
       <div className="dashboard-layout">
-        <nav className="sidebar">
+        {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
+        <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           {['dashboard', 'invitations', 'my-trips', 'available-jobs', 'route-optimizer', 'vehicle-status', 'earnings', 'performance', 'settings', 'support'].map(section => (
             <a
               key={section}
               href="#"
               className={`nav-item ${activeSection === section ? 'active' : ''}`}
-              onClick={(e) => { e.preventDefault(); switchToSection(section); }}
+              onClick={(e) => { e.preventDefault(); switchToSection(section); setSidebarOpen(false); }}
             >
               <i className={`fas fa-${
                 section === 'dashboard' ? 'tachometer-alt' :
@@ -870,33 +875,25 @@ useEffect(() => {
         >
           <div 
             onClick={(e) => e.stopPropagation()}
+            className="modal-content bid-modal-card"
             style={{
-              background: '#1e1e1e',
               borderRadius: '16px',
-              padding: '0',
               maxWidth: '500px',
               width: '90%',
               maxHeight: '90vh',
               overflow: 'auto',
-              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)',
               position: 'relative',
               zIndex: 100000
             }}
           >
-            <div style={{
-              padding: '24px',
-              borderBottom: '1px solid #333',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <h3 style={{ margin: 0, color: '#fff', fontSize: '1.5rem' }}>Submit Your Bid</h3>
+            <div className="modal-header">
+              <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Submit Your Bid</h3>
               <button 
                 onClick={closeBidModal}
+                className="close-btn"
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#888',
                   fontSize: '2rem',
                   cursor: 'pointer',
                   width: '32px',
@@ -904,37 +901,33 @@ useEffect(() => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  transition: 'all 0.2s'
                 }}
-              > </button>
+              >✕</button>
             </div>
 
-            <div style={{ padding: '24px' }}>
-              <div style={{
+            <div className="modal-body" style={{ padding: '24px' }}>
+              <div className="shipment-info-box" style={{
                 marginBottom: '24px',
                 padding: '16px',
-                background: '#2a2a2a',
                 borderRadius: '8px',
-                border: '1px solid #444'
               }}>
-                <h4 style={{ margin: '0 0 8px 0', color: '#4CAF50' }}>#{selectedJob.shipment_id}</h4>
-                <p style={{ margin: '4px 0', color: '#ccc' }}>
-                 <strong>Route:</strong> {selectedJob.from_location} → {selectedJob.to_location}
+                <h4 style={{ margin: '0 0 8px 0', color: '#22c55e' }}>#{selectedJob.shipment_id}</h4>
+                <p style={{ margin: '4px 0' }}>
+                  <strong>Route:</strong> {selectedJob.from_location} → {selectedJob.to_location}
                 </p>
-                <p style={{ margin: '4px 0', color: '#ccc' }}>
+                <p style={{ margin: '4px 0' }}>
                   <strong>Package:</strong> {selectedJob.package_type} ({selectedJob.package_weight}kg)
                 </p>
               </div>
 
               <form onSubmit={handleSubmitBid}>
-                <div style={{ marginBottom: '20px' }}>
+                <div className="form-group" style={{ marginBottom: '20px' }}>
                   <label style={{
                     display: 'block',
                     marginBottom: '8px',
-                    color: '#ccc',
-                    fontWeight: '500'
+                    fontWeight: '600'
                   }}>
-                 Your Bid Amount (₹) *
+                    Your Bid Amount (₹) *
                   </label>
                   <input
                     type="number"
@@ -944,28 +937,25 @@ useEffect(() => {
                     required
                     min="100"
                     step="10"
+                    className="form-input"
                     style={{
                       width: '100%',
                       padding: '12px',
-                      background: '#2a2a2a',
-                      border: '1px solid #444',
                       borderRadius: '8px',
-                      color: '#fff',
                       fontSize: '1rem',
                       outline: 'none'
                     }}
                   />
-                  <small style={{ color: '#888', fontSize: '0.85rem' }}>
+                  <small style={{ fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>
                     Enter a competitive amount to increase your chances
                   </small>
                 </div>
 
-                <div style={{ marginBottom: '20px' }}>
+                <div className="form-group" style={{ marginBottom: '20px' }}>
                   <label style={{
                     display: 'block',
                     marginBottom: '8px',
-                    color: '#ccc',
-                    fontWeight: '500'
+                    fontWeight: '600'
                   }}>
                     Message to Customer (Optional)
                   </label>
@@ -974,13 +964,11 @@ useEffect(() => {
                     placeholder="Tell them why they should choose you..."
                     value={bidMessage}
                     onChange={(e) => setBidMessage(e.target.value)}
+                    className="form-textarea"
                     style={{
                       width: '100%',
                       padding: '12px',
-                      background: '#2a2a2a',
-                      border: '1px solid #444',
                       borderRadius: '8px',
-                      color: '#fff',
                       fontSize: '1rem',
                       fontFamily: 'inherit',
                       resize: 'vertical',
@@ -991,7 +979,7 @@ useEffect(() => {
 
                 <div style={{
                   padding: '20px 0 0 0',
-                  borderTop: '1px solid #333',
+                  borderTop: '1px solid var(--border-color)',
                   display: 'flex',
                   gap: '12px',
                   justifyContent: 'flex-end'
@@ -1051,6 +1039,44 @@ useEffect(() => {
         />
       )}
 
+      {/* Mobile Bottom Navigation Tab Bar */}
+      <nav className="mobile-bottom-nav">
+        <button 
+          className={`bottom-nav-item ${activeSection === 'dashboard' ? 'active' : ''}`}
+          onClick={() => switchToSection('dashboard')}
+        >
+          <i className="fas fa-tachometer-alt"></i>
+          <span>Home</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'available-jobs' ? 'active' : ''}`}
+          onClick={() => switchToSection('available-jobs')}
+        >
+          <i className="fas fa-search"></i>
+          <span>Jobs</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'my-trips' ? 'active' : ''}`}
+          onClick={() => switchToSection('my-trips')}
+        >
+          <i className="fas fa-route"></i>
+          <span>Trips</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'route-optimizer' ? 'active' : ''}`}
+          onClick={() => switchToSection('route-optimizer')}
+        >
+          <i className="fas fa-map-marked-alt"></i>
+          <span>Routes</span>
+        </button>
+        <button 
+          className={`bottom-nav-item ${activeSection === 'earnings' ? 'active' : ''}`}
+          onClick={() => switchToSection('earnings')}
+        >
+          <i className="fas fa-rupee-sign"></i>
+          <span>Earnings</span>
+        </button>
+      </nav>
     </>
   );
 }

@@ -28,13 +28,20 @@ const endIcon = new L.DivIcon({
   iconAnchor: [14, 14],
 });
 
-// Helper component to auto-fit map bounds
+// Helper component to auto-fit map bounds safely
 function AutoFitBounds({ points }) {
   const map = useMap();
   useEffect(() => {
-    if (points && points.length > 0) {
-      const bounds = L.latLngBounds(points);
-      map.fitBounds(bounds, { padding: [40, 40] });
+    if (!map || !map._mapPane) return;
+    try {
+      if (points && points.length > 0) {
+        const bounds = L.latLngBounds(points);
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [40, 40], animate: false });
+        }
+      }
+    } catch (err) {
+      console.warn('AutoFitBounds warning:', err);
     }
   }, [map, points]);
   return null;
@@ -339,7 +346,47 @@ function RouteOptimizer({ onApplyRoute, currentUser }) {
             </div>
           )}
 
-          {optimizationResult && (
+          {loading && (
+            <div className="route-loading-state">
+              <div className="loading-hero-banner">
+                <div className="pulse-spinner"></div>
+                <div>
+                  <h3>⚡ Calculating Optimal Turn-by-Turn Routes...</h3>
+                  <p>Querying OpenStreetMap & OSRM Driving Engine for <strong>{pickup}</strong> → <strong>{delivery}</strong></p>
+                </div>
+              </div>
+
+              {/* Skeleton Strategy Cards */}
+              <div className="skeleton-cards-grid">
+                <div className="skeleton-card">
+                  <div className="skeleton-pill">⚡ Fastest Route</div>
+                  <div className="skeleton-block"></div>
+                  <div className="skeleton-text"></div>
+                </div>
+                <div className="skeleton-card">
+                  <div className="skeleton-pill">📏 Shortest Route</div>
+                  <div className="skeleton-block"></div>
+                  <div className="skeleton-text"></div>
+                </div>
+                <div className="skeleton-card">
+                  <div className="skeleton-pill">⛽ Lowest Fuel Cost</div>
+                  <div className="skeleton-block"></div>
+                  <div className="skeleton-text"></div>
+                </div>
+              </div>
+
+              {/* Skeleton Map Preview */}
+              <div className="skeleton-map-placeholder">
+                <i className="fas fa-map-marked-alt fa-spin-pulse"></i>
+                <p>Generating Highway Geometry & Turn-by-Turn Coordinates...</p>
+                <div className="loading-progress-bar">
+                  <div className="progress-fill"></div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!loading && optimizationResult && (
             <>
               {/* 3 Strategy Option Cards */}
               <div className="route-cards-grid">
