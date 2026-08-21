@@ -60,12 +60,30 @@ async def log_requests(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# ─── Auto-create tables ───────────────────────────────────────────────────────
 @app.on_event("startup")
 def startup():
     print("🔧 CargoMate FastAPI Backend Starting...")
     Base.metadata.create_all(bind=engine)
-    print("[OK] PostgreSQL tables created / verified successfully")
+
+    # Auto-migration: ensure new columns exist in existing PostgreSQL tables
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        cols_to_add = [
+            ("shipments", "pickup_pincode", "VARCHAR(10)"),
+            ("shipments", "pickup_district", "VARCHAR(100)"),
+            ("shipments", "pickup_state", "VARCHAR(100)"),
+            ("shipments", "delivery_pincode", "VARCHAR(10)"),
+            ("shipments", "delivery_district", "VARCHAR(100)"),
+            ("shipments", "delivery_state", "VARCHAR(100)"),
+        ]
+        for tbl, col, col_type in cols_to_add:
+            try:
+                conn.execute(text(f"ALTER TABLE {tbl} ADD COLUMN IF NOT EXISTS {col} {col_type};"))
+                conn.commit()
+            except Exception as e:
+                print(f"[MIGRATE NOTICE] {tbl}.{col}: {e}")
+
+    print("[OK] PostgreSQL tables and column migrations verified successfully")
     print("[OK] Middleware configured successfully")
 
 # ─── Routers ──────────────────────────────────────────────────────────────────
