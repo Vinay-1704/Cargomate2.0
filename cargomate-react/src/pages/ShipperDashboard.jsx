@@ -43,7 +43,13 @@ const { toasts, showToast, removeToast } = useToast();  // ADD
   // Form state
   const [shipmentForm, setShipmentForm] = useState({
     fromLocation: '',
+    fromDistrict: '',
+    fromState: '',
+    fromPincode: '',
     toLocation: '',
+    toDistrict: '',
+    toState: '',
+    toPincode: '',
     packageType: '',
     packageWeight: '',
     packageDescription: '',
@@ -321,6 +327,15 @@ useEffect(() => {
       showToast('Please fill all required fields', 'error');
       return;
     }
+
+    // Format full address strings with pincode precision
+    const fullFromLocation = shipmentForm.fromPincode 
+      ? `${shipmentForm.fromLocation}${shipmentForm.fromDistrict ? ', ' + shipmentForm.fromDistrict : ''}${shipmentForm.fromState ? ', ' + shipmentForm.fromState : ''} (${shipmentForm.fromPincode})`
+      : shipmentForm.fromLocation;
+
+    const fullToLocation = shipmentForm.toPincode 
+      ? `${shipmentForm.toLocation}${shipmentForm.toDistrict ? ', ' + shipmentForm.toDistrict : ''}${shipmentForm.toState ? ', ' + shipmentForm.toState : ''} (${shipmentForm.toPincode})`
+      : shipmentForm.toLocation;
     
     const newShipment = {
       id: Date.now(),
@@ -329,8 +344,14 @@ useEffect(() => {
       shipper_name: currentUser.name,
       shipper_email: currentUser.email,
       shipper_phone: currentUser.phone,
-      from_location: shipmentForm.fromLocation,
-      to_location: shipmentForm.toLocation,
+      from_location: fullFromLocation,
+      to_location: fullToLocation,
+      pickup_pincode: shipmentForm.fromPincode,
+      pickup_district: shipmentForm.fromDistrict,
+      pickup_state: shipmentForm.fromState,
+      delivery_pincode: shipmentForm.toPincode,
+      delivery_district: shipmentForm.toDistrict,
+      delivery_state: shipmentForm.toState,
       package_type: shipmentForm.packageType,
       package_weight: parseFloat(shipmentForm.packageWeight),
       package_description: shipmentForm.packageDescription,
@@ -365,7 +386,13 @@ useEffect(() => {
     // Reset form
     setShipmentForm({
       fromLocation: '',
+      fromDistrict: '',
+      fromState: '',
+      fromPincode: '',
       toLocation: '',
+      toDistrict: '',
+      toState: '',
+      toPincode: '',
       packageType: '',
       packageWeight: '',
       packageDescription: '',
@@ -814,32 +841,127 @@ const handleRatingSuccess = () => {
 
               <div className="content-card">
                 <form onSubmit={handleCreateShipment} className="shipment-form">
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="fromLocation">From Location *</label>
-                      <input
-                        type="text"
-                        id="fromLocation"
-                        name="fromLocation"
-                        className="form-input"
-                        placeholder="Enter pickup location"
-                        value={shipmentForm.fromLocation}
-                        onChange={handleInputChange}
-                        required
-                      />
+                  {/* 📍 Structured Pickup Address Section */}
+                  <div style={{ marginBottom: '20px', padding: '16px', background: 'rgba(34, 197, 94, 0.05)', borderRadius: '10px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                    <h4 style={{ margin: '0 0 14px 0', color: '#22c55e', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <i className="fas fa-map-marker-alt"></i> 1. Pickup Address Precision
+                    </h4>
+                    <div className="form-row">
+                      <div className="form-group" style={{ flex: 2 }}>
+                        <label htmlFor="fromLocation">City / Village / Landmark *</label>
+                        <input
+                          type="text"
+                          id="fromLocation"
+                          name="fromLocation"
+                          className="form-input"
+                          placeholder="e.g. Duvvada Railway Station Area"
+                          value={shipmentForm.fromLocation}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group" style={{ flex: 1 }}>
+                        <label htmlFor="fromPincode">Pickup Pincode *</label>
+                        <input
+                          type="text"
+                          id="fromPincode"
+                          name="fromPincode"
+                          className="form-input"
+                          placeholder="6-digit (e.g. 530046)"
+                          maxLength={6}
+                          value={shipmentForm.fromPincode}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="toLocation">To Location *</label>
-                      <input
-                        type="text"
-                        id="toLocation"
-                        name="toLocation"
-                        className="form-input"
-                        placeholder="Enter destination"
-                        value={shipmentForm.toLocation}
-                        onChange={handleInputChange}
-                        required
-                      />
+                    <div className="form-row" style={{ marginTop: '12px' }}>
+                      <div className="form-group">
+                        <label htmlFor="fromDistrict">District / Region</label>
+                        <input
+                          type="text"
+                          id="fromDistrict"
+                          name="fromDistrict"
+                          className="form-input"
+                          placeholder="e.g. Visakhapatnam"
+                          value={shipmentForm.fromDistrict}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="fromState">State</label>
+                        <input
+                          type="text"
+                          id="fromState"
+                          name="fromState"
+                          className="form-input"
+                          placeholder="e.g. Andhra Pradesh"
+                          value={shipmentForm.fromState}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 🎯 Structured Delivery Address Section */}
+                  <div style={{ marginBottom: '20px', padding: '16px', background: 'rgba(99, 102, 241, 0.05)', borderRadius: '10px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                    <h4 style={{ margin: '0 0 14px 0', color: '#6366f1', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <i className="fas fa-flag-checkered"></i> 2. Delivery Destination Precision
+                    </h4>
+                    <div className="form-row">
+                      <div className="form-group" style={{ flex: 2 }}>
+                        <label htmlFor="toLocation">City / Village / Landmark *</label>
+                        <input
+                          type="text"
+                          id="toLocation"
+                          name="toLocation"
+                          className="form-input"
+                          placeholder="e.g. Jonnavalasa Main Junction"
+                          value={shipmentForm.toLocation}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group" style={{ flex: 1 }}>
+                        <label htmlFor="toPincode">Delivery Pincode *</label>
+                        <input
+                          type="text"
+                          id="toPincode"
+                          name="toPincode"
+                          className="form-input"
+                          placeholder="6-digit (e.g. 535004)"
+                          maxLength={6}
+                          value={shipmentForm.toPincode}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="form-row" style={{ marginTop: '12px' }}>
+                      <div className="form-group">
+                        <label htmlFor="toDistrict">District / Region</label>
+                        <input
+                          type="text"
+                          id="toDistrict"
+                          name="toDistrict"
+                          className="form-input"
+                          placeholder="e.g. Vizianagaram"
+                          value={shipmentForm.toDistrict}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="toState">State</label>
+                        <input
+                          type="text"
+                          id="toState"
+                          name="toState"
+                          className="form-input"
+                          placeholder="e.g. Andhra Pradesh"
+                          value={shipmentForm.toState}
+                          onChange={handleInputChange}
+                        />
+                      </div>
                     </div>
                   </div>
 

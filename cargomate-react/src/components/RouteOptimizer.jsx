@@ -47,11 +47,20 @@ function AutoFitBounds({ points }) {
   return null;
 }
 
-const CITY_PRESETS = ['Mumbai', 'Pune', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Visakhapatnam', 'Kolkata'];
+const CITY_PRESETS = [
+  'Duvvada (530046)',
+  'Jonnavalasa (535004)',
+  'Visakhapatnam (530016)',
+  'Vijayawada (520001)',
+  'Hyderabad (500001)',
+  'Chennai (600001)',
+  'Mumbai (400001)',
+  'Bengaluru (560001)'
+];
 
 function RouteOptimizer({ onApplyRoute, currentUser }) {
-  const [pickup, setPickup] = useState('Mumbai');
-  const [delivery, setDelivery] = useState('Pune');
+  const [pickup, setPickup] = useState('Duvvada (530046)');
+  const [delivery, setDelivery] = useState('Jonnavalasa (535004)');
   const [vehicleType, setVehicleType] = useState('medium_truck');
   const [fuelPrice, setFuelPrice] = useState('95.5');
 

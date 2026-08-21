@@ -624,7 +624,13 @@ useEffect(() => {
                         <span className="badge badge-warning">Open</span>
                       </div>
                       <div className="job-body">
-                      <p><strong>Route:</strong> {job.from_location} → {job.to_location}</p>
+                        <p><strong>Route:</strong> {job.from_location} → {job.to_location}</p>
+                        {(job.pickup_pincode || job.delivery_pincode) && (
+                          <div style={{ margin: '6px 0', fontSize: '11px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            {job.pickup_pincode && <span className="badge badge-success">📍 Pickup Pin: {job.pickup_pincode}</span>}
+                            {job.delivery_pincode && <span className="badge badge-primary">🎯 Drop Pin: {job.delivery_pincode}</span>}
+                          </div>
+                        )}
                         <p><strong>Package:</strong> {job.package_type} ({job.package_weight}kg)</p>
                         <p><strong>Pickup:</strong> {new Date(job.pickup_date).toLocaleDateString()}</p>
                       </div>

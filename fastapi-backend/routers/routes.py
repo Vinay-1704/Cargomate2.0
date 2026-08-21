@@ -66,23 +66,29 @@ VEHICLE_EFFICIENCY: Dict[str, float] = {
 def geocode_location(location: str) -> Tuple[float, float]:
     """Helper to get (lat, lon) for a location string via Nominatim or local DB."""
     loc_clean = location.strip().lower()
-    for city_key, coords in CITY_COORDINATES.items():
-        if city_key in loc_clean:
-            return coords
 
-    # Try live OpenStreetMap Nominatim geocoding
+    # 1. If detailed address or pincode present, try live OpenStreetMap Nominatim geocoding FIRST
     try:
-        encoded_loc = urllib.parse.quote(location)
+        query_str = location.strip()
+        if "india" not in loc_clean:
+            query_str += ", India"
+        encoded_loc = urllib.parse.quote(query_str)
         url = f"https://nominatim.openstreetmap.org/search?q={encoded_loc}&format=json&limit=1"
         req = urllib.request.Request(url, headers={'User-Agent': 'CargoMate-Logistics/2.0'})
         with urllib.request.urlopen(req, timeout=3) as resp:
             data = json.loads(resp.read().decode('utf-8'))
             if data and len(data) > 0:
+                print(f"[GEOCODE] Live OSM result for '{query_str}': ({data[0]['lat']}, {data[0]['lon']})")
                 return (round(float(data[0]['lat']), 4), round(float(data[0]['lon']), 4))
     except Exception as e:
         print(f"[GEOCODE] Live geocoding fallback for '{location}': {e}")
 
-    # Fallback deterministic pseudo-geocoder for any arbitrary address
+    # 2. Known City Coordinates fallback
+    for city_key, coords in CITY_COORDINATES.items():
+        if city_key in loc_clean:
+            return coords
+
+    # 3. Deterministic pseudo-geocoder fallback
     h = hashlib.md5(loc_clean.encode('utf-8')).hexdigest()
     lat = 15.0 + (int(h[:8], 16) % 1500) / 100.0   # Lat range 15.0 - 30.0 (India)
     lon = 73.0 + (int(h[8:16], 16) % 1500) / 100.0  # Lon range 73.0 - 88.0 (India)

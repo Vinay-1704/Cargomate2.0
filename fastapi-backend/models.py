@@ -121,6 +121,15 @@ class Shipment(Base):
 
     from_location = Column(String(500), nullable=False)
     to_location = Column(String(500), nullable=False)
+
+    # Structured Location & Pincode Precision Fields
+    pickup_pincode = Column(String(10), nullable=True)
+    pickup_district = Column(String(100), nullable=True)
+    pickup_state = Column(String(100), nullable=True)
+    delivery_pincode = Column(String(10), nullable=True)
+    delivery_district = Column(String(100), nullable=True)
+    delivery_state = Column(String(100), nullable=True)
+
     package_type = Column(String(50), nullable=False)
     package_weight = Column(Float, nullable=False)
     package_description = Column(Text, nullable=False)

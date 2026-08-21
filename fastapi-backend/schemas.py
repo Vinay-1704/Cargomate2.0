@@ -46,12 +46,20 @@ class UserUpdate(BaseModel):
 class ShipmentCreate(BaseModel):
     from_location: str
     to_location: str
+    pickup_pincode: Optional[str] = None
+    pickup_district: Optional[str] = None
+    pickup_state: Optional[str] = None
+    delivery_pincode: Optional[str] = None
+    delivery_district: Optional[str] = None
+    delivery_state: Optional[str] = None
     package_type: str
     package_weight: float
     package_description: str
     vehicle_type: str
     pickup_date: str
     special_instructions: Optional[str] = ""
+
+    model_config = {"extra": "allow"}
 
 
 class RatingBody(BaseModel):
