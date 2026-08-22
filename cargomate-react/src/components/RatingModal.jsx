@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/rating-modal.css';
 
-const API_URL = 'http://localhost:3000/api';
+import { API_URL } from '../config';
 
 function RatingModal({ shipment, onClose, onSuccess }) {
   const [rating, setRating] = useState(0);

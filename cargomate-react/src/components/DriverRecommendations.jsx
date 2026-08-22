@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/driver-recommendations.css';
 
-const API_URL = 'http://localhost:3000/api';
+import { API_URL } from '../config';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

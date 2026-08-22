@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 
+import { API_URL } from '../config';
+
 function LoginPage() {
   const navigate = useNavigate();
   const [userType, setUserType] = useState('shipper');
@@ -155,7 +157,7 @@ function LoginPage() {
 
     try {
       // Try server connection
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

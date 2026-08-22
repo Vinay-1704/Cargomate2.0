@@ -12,6 +12,7 @@ import Toast from '../components/Toast';
 import { useToast } from '../hooks/useToast';
 
 import '../styles/shipper-dashboard.css';
+import { API_URL } from '../config';
 
 
 function ShipperDashboard() {
@@ -216,7 +217,7 @@ useEffect(() => {
       let shipments = getDemoShipments();
       
       try {
-        const response = await fetch(`http://localhost:3000/api/shipments/user/${currentUser.id}`, {
+        const response = await fetch(`${API_URL}/shipments/user/${currentUser.id}`, {
           headers: { 'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}` }
         }).catch(() => null);
         
@@ -367,7 +368,7 @@ useEffect(() => {
     };
     
     try {
-      const response = await fetch('http://localhost:3000/api/shipments', {
+      const response = await fetch(`${API_URL}/shipments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -412,7 +413,7 @@ const viewBids = async (shipment) => {
     console.log('📋 Loading bids for shipment:', shipment.shipment_id);
     
     const response = await fetch(
-      `http://localhost:3000/api/shipments/${shipment.shipment_id}/bids`,
+      `${API_URL}/shipments/${shipment.shipment_id}/bids`,
       {
         headers: {
           'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
@@ -474,7 +475,7 @@ const acceptBid = async (bid) => {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/bids/${bidId}/accept`,
+      `${API_URL}/bids/${bidId}/accept`,
       {
         method: 'POST',
         headers: {

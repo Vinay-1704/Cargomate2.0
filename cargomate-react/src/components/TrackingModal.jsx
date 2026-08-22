@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import LiveTrackingMap from './LiveTrackingMap';
+import { API_URL } from '../config';
 import '../styles/tracking-modal.css';
 import '../styles/live-tracking.css';
 
@@ -37,7 +38,7 @@ const loadMessages = async () => {
   try {
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
     const response = await fetch(
-      `http://localhost:3000/api/messages/${shipment.shipment_id}`,
+      `${API_URL}/messages/${shipment.shipment_id}`,
       {
         headers: { 'Authorization': `Bearer ${token}` }
       }
@@ -71,7 +72,7 @@ const loadMessages = async () => {
       
       // Send to backend
       const response = await fetch(
-        `http://localhost:3000/api/messages/${shipment.shipment_id}`,
+        `${API_URL}/messages/${shipment.shipment_id}`,
         {
           method: 'POST',
           headers: {

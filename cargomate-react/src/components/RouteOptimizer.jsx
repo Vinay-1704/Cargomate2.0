@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../styles/route-optimizer.css';
 
-const API_URL = 'http://localhost:3000/api';
+import { API_URL } from '../config';
 
 // Fix Leaflet's default icon issue
 delete L.Icon.Default.prototype._getIconUrl;

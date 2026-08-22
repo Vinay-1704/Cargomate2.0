@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/settings.css';
 
-const API_URL = 'http://localhost:3000/api';
+import { API_URL } from '../config';
 
 function Settings({ currentUser }) {
   const [userInfo, setUserInfo] = useState({

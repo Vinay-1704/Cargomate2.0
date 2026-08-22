@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/driver-earnings.css';
 
-const API_URL = 'http://localhost:3000/api';
+import { API_URL } from '../config';
 
 function DriverEarnings({ currentUser }) {
   const [earnings, setEarnings] = useState({

@@ -14,7 +14,7 @@ import { useToast } from '../hooks/useToast';
 import '../styles/driver-dashboard.css';
 import '../styles/live-tracking.css';
 
-const API_URL = 'http://localhost:3000/api';
+import { API_URL } from '../config';
 
 function DriverDashboard() {
   const navigate = useNavigate();
@@ -489,7 +489,7 @@ useEffect(() => {
     return;
   }
   const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-  await fetch(`http://localhost:3000/api/trips/${tripId}/status`, {
+  await fetch(`${API_URL}/trips/${tripId}/status`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/signup.css';
 
 
+import { API_URL } from '../config';
+
 function SignupPage() {
   const navigate = useNavigate();
   const [userType, setUserType] = useState('shipper');
@@ -270,7 +272,7 @@ function SignupPage() {
 
     try {
       // Try server connection
-      const response = await fetch('http://localhost:3000/api/register', {
+      const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

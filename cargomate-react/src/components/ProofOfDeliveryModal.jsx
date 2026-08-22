@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/proof-of-delivery.css';
 
-const API_URL = 'http://localhost:3000/api';
+import { API_URL } from '../config';
 
 /**
  * ProofOfDeliveryModal handles:
